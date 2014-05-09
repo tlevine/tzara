@@ -1,0 +1,10 @@
+Features for which to check distributions about columns
+
+* nchar
+* nline/nnewline
+* nword/nspace
+* ndigit
+* nlowercase
+* nuppercase
+
+
