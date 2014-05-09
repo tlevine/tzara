@@ -23,9 +23,15 @@ def deconstruct_dataset(dataset:iter) -> dict:
 
     returns something like this.
 
-        {'Petal.Length':Counter({'nchar':12,'nnewline':0})}
+        {'Petal.Length':{'nchar':Counter({12:1}),'nnewline':Counter({0:1}})}
 
     It actually returns more, but this is a small example just
     to convey the type.
     '''
+    distributions = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.Counter()))
+    for row in dataset:
+        for column_name, cell in row.items():
+            for feature_name, feature_value in _features(cell).items():
+                distributions[column_name][feature_name][feature_value] += 1
+
     column_distributions = i.feature_distributions(column)
