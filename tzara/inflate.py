@@ -17,20 +17,34 @@ def features(cell:str) -> dict:
         'ndigit': re.sub(notdigit, '', stripped),
     }
 
-def feature_distributions(cells:iter, _features = features) -> dict:
-    distributions = collections.defaultdict(lambda: collections.Counter())
-    for cell in cells:
-        for key, value in _features(cell).items():
-            distributions[k][value] += 1
-    return distributions
+def inflate(dataset:iter) -> dict:
+    '''
+    Dataset is an iterable of dicts, with keys as string
+    column names and values as string cell values.
 
-def merge_distributions(a:dict, b:dict) -> dict:
+    This returns a dictionary with keys as column names.
+    Each of its values is another dictionary, with keys
+    as string feature names (nchar, nnewline, &c.) and
+    values as counter feature distributions.
+
+
+        dataset :: [dict str str]
+        distributions :: dict str collections.Counter
+        deconstruct_dataset :: dataset -> dict str distributions
+     
+    For example,
+
+        deconstruct_dataset([{'Petal.Length'}])
+
+    returns something like this.
+
+        {'Petal.Length':{'nchar':Counter({12:1}),'nnewline':Counter({0:1}})}
+
+    It actually returns more, but this is a small example just
+    to convey the type.
     '''
-    Combine two dicts of counters.
-    '''
-    c = dict(a)
-    for key, b.keys():
-        if key not in c:
-            c[key] = collections.Counter()
-        c[key].update(b[key])
-    return c
+    distributions = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.Counter()))
+    for row in dataset:
+        for column_name, cell in row.items():
+            for feature_name, feature_value in _features(cell).items():
+                distributions[column_name][feature_name][feature_value] += 1
