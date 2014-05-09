@@ -17,10 +17,10 @@ def features(cell:str) -> dict:
         'ndigit': re.sub(notdigit, '', stripped),
     }
 
-def feature_distributions(cells:iter) -> dict:
+def feature_distributions(cells:iter, _features = features) -> dict:
     distributions = collections.defaultdict(lambda: collections.Counter())
     for cell in cells:
-        for key, value in cells.items():
+        for key, value in _features(cell).items():
             distributions[k][value] += 1
     return distributions
 
