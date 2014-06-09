@@ -1,8 +1,6 @@
 import qualified Data.Map as M
 import qualified Data.Char as C
 
-data Feature = Nchar | Nnewline | Nuppercase | Nlowercase | Ndigit | Nspace
-
 data Cell = M.Map Feature Int
 
 type Column = M.Map Feature [Int]
@@ -18,7 +16,7 @@ columnDist :: Distance Column
 toCell :: String -> Cell
 toCell raw = M.fromList $ [("nchar", length raw),
                            ("nnewline", count (== '\n') raw),
-                           ("nspace", count (== ' )' raw),
+                           ("nspace", count (== ' ') raw),
                            ("nuppercase", count C.isAsciiUpper raw
                            ("nuppercase", count C.isAsciiLower raw),
                            ("ndigit", count C.isNumber raw),
@@ -28,4 +26,17 @@ toCell raw = M.fromList $ [("nchar", length raw),
     count func = foldr (\x sum -> if (func x) then sum + 1 else sum) 0
 
 toColumn :: [Cell] -> Column
-toColumn cell:cells
+toColumn cell:[] =  M.fromList $ [("nchar", []),
+                                  ("nnewline", []),
+                                  ("nspace", []),
+                                  ("nuppercase", [])
+                                  ("nuppercase", []),
+                                  ("ndigit", []),
+                                  ("nmark", []),
+                                  ("nsymbol", []) ]
+toColumn cell:cells = addToColumn (toColumn cells) cell
+
+addToColumn :: Column -> Cell -> Column
+addToColumn column cell = M.mapWithKey (addCell cell) column
+  where
+    addCell cell key column = (M.lookup key cell):column
