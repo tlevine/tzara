@@ -1,8 +1,9 @@
 import qualified Data.Map as M
+import qualified Data.Char as C
 
 type Array = undefined
 
-data Cell = Column {
+data Cell = Cell {
   nchar :: Array Int,
   nnewline :: Array Int,
   nuppercase :: Array Int,
@@ -17,11 +18,18 @@ type Table = [Column]
 
 type Distance a :: a -> a -> Float
 
-dist :: Distance 
+tableDist :: Distance Table
 
-        'nchar': len(stripped),
-        'nnewline': stripped.count('\n'),
-        'nspace': stripped.count(' '),
-        'nuppercase': re.sub(notupper, '', stripped),
-        'nlowercase': re.sub(notlower, '', stripped),
-        'ndigit': re.sub(notdigit, '', stripped),
+columnDist :: Distance Column
+
+fromCSVCell :: String -> Cell
+fromCSVCell raw = { nchar = length raw,
+                    nnewline = count (== '\n') raw,
+                    nspace = count (== ' )' raw,
+                    nuppercase = count C.isAsciiUpper raw
+                    nuppercase = count C.isAsciiLower raw,
+                    ndigit = count C.isNumber raw,
+                    nmark = count C.isMark raw,
+                    nsymbol = count C.isSymbol raw }
+  where
+    count func = foldr (\x sum -> if (func x) then sum + 1 else sum) 0
