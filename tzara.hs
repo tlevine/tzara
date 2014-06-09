@@ -15,6 +15,9 @@ type Column = [Cell]
 
 type Table = [Column]
 
+type Distance a :: a -> a -> Float
+
+dist :: Distance 
 
         'nchar': len(stripped),
         'nnewline': stripped.count('\n'),
